@@ -21,12 +21,12 @@ const setup = (props = {}, state = null) => {
  * @param {string} val - Value of data-test attribute for search.
  * @returns {ShallowWrapper}
 */
-
 const findByTestAttr = (wrapper, val) => (
     wrapper.find(`[data-test="${val}"]`)
 )
 
-test('renders without error', () => {
+
+test('counter component renders without error', () => {
     const wrapper = setup()
     const counterComponent = findByTestAttr(wrapper, 'component-counter')
     expect(counterComponent.length).toBe(1)
@@ -35,6 +35,12 @@ test('renders without error', () => {
 test('renders increment button', () => {
     const wrapper = setup()
     const button = findByTestAttr(wrapper, 'increment-button')
+    expect(button.length).toBe(1)
+})
+
+test('renders decrement button', () => {
+    const wrapper = setup()
+    const button = findByTestAttr(wrapper, 'decrement-button')
     expect(button.length).toBe(1)
 })
 
@@ -57,6 +63,28 @@ test('clicking button increment counter display', () => {
     button.simulate('click')
     const counterDisplay = findByTestAttr(wrapper, 'counter-display')
     expect(counterDisplay.text()).toContain(counter + 1)
+    const errorMessage = findByTestAttr(wrapper, 'error-message')
+    expect(errorMessage.length).toBe(0)
 })
+
+test('clicking button decrements the counter display', () => {
+    const counter = 1
+    const wrapper = setup(null, { counter })
+    const button = findByTestAttr(wrapper, 'decrement-button')
+    button.simulate('click')
+    const counterDisplay = findByTestAttr(wrapper, 'counter-display')
+    expect(counterDisplay.text()).toContain(counter - 1)
+})
+
+test('clicking decrement button cannot go below zero', () => {
+    const counter = 0
+    const wrapper = setup(null, { counter })
+    const button = findByTestAttr(wrapper, 'decrement-button')
+    button.simulate('click')
+    const errorMessage = findByTestAttr(wrapper, 'error-message')
+    expect(errorMessage.length).toBe(1)
+})
+
+
 
 
